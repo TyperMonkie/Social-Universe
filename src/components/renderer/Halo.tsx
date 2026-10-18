@@ -54,7 +54,7 @@ export default function Halo({ spec, burstAmount }: Props) {
     mesh.current?.scale.setScalar(scale * (1 + burstAmount.current * 0.32));
     if (mesh.current) {
       (mesh.current.material as ShaderMaterial).uniforms.uOpacity.value =
-        (spec.geometry.mode === "nebula" ? 0.14 : 0.24) * (1 - burstAmount.current * 0.55);
+        (spec.geometry.mode === "nebula" ? 0.14 : 0.29) * (1 - burstAmount.current * 0.55);
     }
   });
 

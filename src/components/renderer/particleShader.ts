@@ -13,9 +13,9 @@ void main() {
   float radius = length(gl_PointCoord - vec2(0.5));
   float disc = 1.0 - smoothstep(0.08, 0.5, radius);
   float heart = exp(-radius * radius * 32.0);
-  float alpha = disc * vOpacity * (0.24 + 0.5 * heart);
+  float alpha = disc * vOpacity * (0.36 + 0.62 * heart);
   if (alpha < 0.012) discard;
-  vec3 color = vColor * (0.54 + 0.46 * vLight + 0.7 * heart);
+  vec3 color = vColor * (0.68 + 0.48 * vLight + 0.68 * heart);
   gl_FragColor = vec4(color, alpha);
 }
 `;
@@ -70,7 +70,7 @@ void main() {
 
   vec4 cameraPoint = modelViewMatrix * vec4(p, 1.0);
   gl_Position = projectionMatrix * cameraPoint;
-  gl_PointSize = clamp(aSize * uPixelRatio * (6.0 / max(-cameraPoint.z, 0.1)) * (1.0 + uBurst * 0.25), 1.0, 24.0);
+  gl_PointSize = clamp(aSize * uPixelRatio * (6.8 / max(-cameraPoint.z, 0.1)) * (1.0 + uBurst * 0.25), 1.0, 24.0);
   float diffuse = max(dot(radial, normalize(vec3(-0.42, 0.72, 0.56))), 0.0);
   vLight = 0.34 + diffuse * 0.66;
   vColor = color;

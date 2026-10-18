@@ -151,6 +151,13 @@ textarea.text-input { display: block; resize: vertical; }
 .dna-meter strong { color: #beb3e3; font-weight: 650; }
 .meter-track { display: block; height: 3px; margin-top: 6px; border-radius: 99px; background: rgba(168, 162, 201, 0.14); overflow: hidden; }
 .meter-track > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #7966c2, #87d7e3); }
+.dna-motifs { margin-top: 17px; padding-top: 14px; border-top: 1px solid var(--line); }
+.dna-motifs-heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px; }
+.dna-motifs-heading > span { color: #a7e0e4; font-size: 12px; }
+.dna-motifs-heading strong { color: #dedcf0; font-size: 11px; font-weight: 650; }
+.dna-motifs-heading small { color: #85859e; font-size: 10px; }
+.dna-motifs ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; }
+.dna-motifs li { max-width: 100%; padding: 7px 10px; border: 1px solid rgba(130, 210, 224, 0.23); border-radius: 7px; background: linear-gradient(120deg, rgba(51, 105, 129, 0.18), rgba(91, 72, 139, 0.17)); color: #cbe9ee; font-size: 11px; line-height: 1.45; overflow-wrap: anywhere; }
 .shader-note { margin: 16px 0 0; padding: 8px 10px; border: 1px solid rgba(126, 199, 219, 0.16); border-radius: 6px; color: #9ecbd9; font-size: 10px; }
 .shader-note.is-fallback { border-color: rgba(255, 193, 121, 0.2); color: #eac49e; }
 .workspace-footer { display: flex; justify-content: space-between; gap: 16px; padding: 0 2px 14px; color: #62637a; font-size: 9px; letter-spacing: 0.06em; }

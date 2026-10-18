@@ -2,7 +2,7 @@
 
 import { MutableRefObject, useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { AdditiveBlending, BufferAttribute, BufferGeometry, Group, LineBasicMaterial } from "three";
+import { AdditiveBlending, BufferAttribute, BufferGeometry, DoubleSide, Group, LineBasicMaterial, MeshBasicMaterial, RingGeometry } from "three";
 import type { RenderSpec } from "@/lib/contracts";
 
 type Props = { spec: RenderSpec; burstAmount: MutableRefObject<number> };
@@ -33,12 +33,39 @@ function orbitGeometry(spec: RenderSpec, orbitIndex: number): BufferGeometry {
 
 export default function OrbitTrails({ spec, burstAmount }: Props) {
   const group = useRef<Group>(null);
+  const rings = useMemo(() => {
+    if (spec.geometry.mode === "nebula") return [];
+    const radius = spec.geometry.radius;
+    const bands = spec.geometry.mode === "sphere"
+      ? [
+          { inner: 1.19, outer: 1.57, tilt: 0.80, roll: -0.29, opacity: 0.15 },
+          { inner: 1.34, outer: 1.38, tilt: 0.80, roll: -0.29, opacity: 0.44 },
+        ]
+      : [
+          { inner: 1.13, outer: 1.42, tilt: 0.68, roll: 0.42, opacity: 0.13 },
+          { inner: 1.34, outer: 1.38, tilt: 0.68, roll: 0.42, opacity: 0.42 },
+          { inner: 1.53, outer: 1.66, tilt: -0.41, roll: -0.32, opacity: 0.10 },
+        ];
+    return bands.map((band) => ({
+      geometry: new RingGeometry(radius * band.inner, radius * band.outer, 128, 3),
+      material: new MeshBasicMaterial({
+        color: spec.palette.accent,
+        transparent: true,
+        opacity: band.opacity,
+        depthWrite: false,
+        side: DoubleSide,
+        blending: AdditiveBlending,
+      }),
+      rotation: [band.tilt, 0, band.roll] as [number, number, number],
+      opacity: band.opacity,
+    }));
+  }, [spec]);
   const objects = useMemo(() => Array.from({ length: spec.orbit.count }, (_, index) => ({
     geometry: orbitGeometry(spec, index),
     material: new LineBasicMaterial({
       color: index % 2 === 0 ? spec.palette.accent : spec.palette.outer,
       transparent: true,
-      opacity: spec.orbit.opacity * (index === 0 ? 0.32 : 0.22),
+      opacity: spec.orbit.opacity * (index === 0 ? 0.50 : 0.36),
       depthWrite: false,
       blending: AdditiveBlending,
     }),
@@ -50,17 +77,32 @@ export default function OrbitTrails({ spec, burstAmount }: Props) {
       material.dispose();
     });
   }, [objects]);
+  useEffect(() => () => {
+    rings.forEach(({ geometry, material }) => {
+      geometry.dispose();
+      material.dispose();
+    });
+  }, [rings]);
 
   useFrame((state) => {
-    if (group.current) group.current.rotation.y = state.clock.elapsedTime * 0.025;
+    if (group.current) {
+      // Counter the rotating planet so the broad rings keep their readable ellipse.
+      group.current.rotation.y = -(group.current.parent?.rotation.y ?? 0) + Math.sin(state.clock.elapsedTime * 0.28) * 0.10;
+    }
     objects.forEach(({ material }, index) => {
-      material.opacity = spec.orbit.opacity * (index === 0 ? 0.32 : 0.22) * (1 - burstAmount.current * 0.72);
+      material.opacity = spec.orbit.opacity * (index === 0 ? 0.50 : 0.36) * (1 - burstAmount.current * 0.72);
+    });
+    rings.forEach(({ material, opacity }) => {
+      material.opacity = opacity * (1 - burstAmount.current * 0.82);
     });
   });
 
-  if (objects.length === 0) return null;
+  if (objects.length === 0 && rings.length === 0) return null;
   return (
     <group ref={group}>
+      {rings.map(({ geometry, material, rotation }, index) => (
+        <mesh key={`ring-${index}`} geometry={geometry} material={material} rotation={rotation} />
+      ))}
       {objects.map(({ geometry, material }, index) => (
         <lineSegments
           key={index}

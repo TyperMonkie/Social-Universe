@@ -40,7 +40,7 @@ function sphereDirection(random: () => number): Vec3 {
 /** Build a reproducible, intentionally layered point cloud. No per-frame CPU updates. */
 export function createParticleGeometry(spec: RenderSpec): BufferGeometry {
   const random = randomFromSeed(spec.seed);
-  const count = spec.geometry.count;
+  const count = Math.min(spec.geometry.count, 25000);
   const positions = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
   const burstVectors = new Float32Array(count * 3);
@@ -65,58 +65,57 @@ export function createParticleGeometry(spec: RenderSpec): BufferGeometry {
     let layer = 0;
 
     if (mode === "sphere") {
-      if (placement < 0.78) {
-        const shell = radius * (0.97 + ridge * 0.14 * irregularity + (random() - 0.5) * 0.09);
+      if (placement < 0.87) {
+        const shell = radius * (0.99 + ridge * 0.10 * irregularity + (random() - 0.5) * 0.055);
         point = [direction[0] * shell, direction[1] * shell, direction[2] * shell];
-      } else if (placement < 0.91) {
+      } else if (placement < 0.95) {
         layer = 1;
-        const haze = radius * (1.07 + random() * (0.35 + dispersion * 0.5));
+        const haze = radius * (1.06 + random() * (0.20 + dispersion * 0.26));
         point = [direction[0] * haze, direction[1] * haze, direction[2] * haze];
       } else {
         layer = 2;
-        const core = radius * Math.cbrt(random()) * 0.86;
+        const core = radius * Math.cbrt(random()) * 0.80;
         point = [direction[0] * core, direction[1] * core, direction[2] * core];
       }
     } else if (mode === "hybrid") {
-      if (placement < 0.53) {
-        const shell = radius * (0.91 + ridge * 0.23 * irregularity + (random() - 0.5) * 0.12);
+      if (placement < 0.73) {
+        const shell = radius * (0.95 + ridge * 0.17 * irregularity + (random() - 0.5) * 0.075);
         point = [direction[0] * shell, direction[1] * shell, direction[2] * shell];
-      } else if (placement < 0.86) {
+      } else if (placement < 0.96) {
         layer = 1;
         const armCount = Math.max(2, bands || 3);
         const arm = Math.floor(random() * armCount);
         const along = random();
         const theta = arm * Math.PI * 2 / armCount + along * Math.PI * 1.8 + (random() - 0.5) * 0.3;
-        const reach = radius * (0.94 + along * (0.35 + dispersion * 0.85) + (random() - 0.5) * 0.15);
-        const height = (random() - 0.5) * radius * 0.29 + Math.sin(theta * 2.2) * radius * 0.17;
+        const reach = radius * (1.01 + along * (0.21 + dispersion * 0.36) + (random() - 0.5) * 0.12);
+        const height = (random() - 0.5) * radius * 0.19 + Math.sin(theta * 2.2) * radius * 0.13;
         point = [Math.cos(theta) * reach, height, Math.sin(theta) * reach * 0.72];
       } else {
         layer = 2;
-        const reach = radius * (1.2 + Math.pow(random(), 1.8) * (0.35 + dispersion));
+        const reach = radius * (1.20 + Math.pow(random(), 1.8) * (0.24 + dispersion * 0.32));
         point = [direction[0] * reach, direction[1] * reach, direction[2] * reach];
       }
     } else {
-      if (placement < 0.25) {
-        layer = 2;
-        const core = radius * Math.cbrt(random()) * 0.85;
-        point = [direction[0] * core, direction[1] * core * 0.72, direction[2] * core];
-      } else if (placement < 0.86) {
+      if (placement < 0.43) {
+        const core = radius * Math.cbrt(random()) * 0.87;
+        point = [direction[0] * core, direction[1] * core * 0.88, direction[2] * core * 0.43];
+      } else if (placement < 0.94) {
         layer = 1;
         const armCount = Math.max(2, bands || 3);
         const arm = Math.floor(random() * armCount);
-        const along = Math.pow(random(), 0.7);
+        const along = Math.pow(random(), 0.85);
         const theta = arm * Math.PI * 2 / armCount + along * Math.PI * 2.45 + (random() - 0.5) * (0.55 + dispersion);
-        const reach = radius * (0.3 + along * (1.18 + dispersion * 0.85));
-        const thickness = radius * (0.06 + along * 0.18);
+        const reach = radius * (0.32 + along * (1.04 + dispersion * 0.52));
+        const thickness = radius * (0.045 + along * 0.13);
         point = [
           Math.cos(theta) * reach + (random() - 0.5) * thickness,
-          Math.sin(theta * 1.6) * radius * 0.13 + (random() - 0.5) * thickness * 1.8,
-          Math.sin(theta) * reach * 0.76 + (random() - 0.5) * thickness,
+          Math.sin(theta) * reach * 0.78 + (random() - 0.5) * thickness,
+          Math.sin(theta * 1.6) * radius * 0.17 + (random() - 0.5) * thickness * 1.4,
         ];
       } else {
         layer = 3;
-        const spread = radius * (1.4 + random() * (0.6 + dispersion));
-        point = [direction[0] * spread, direction[1] * spread * 0.65, direction[2] * spread];
+        const spread = radius * (1.28 + random() * (0.42 + dispersion * 0.52));
+        point = [direction[0] * spread, direction[1] * spread * 0.75, direction[2] * spread * 0.36];
       }
     }
 
@@ -125,10 +124,11 @@ export function createParticleGeometry(spec: RenderSpec): BufferGeometry {
     positions[offset + 1] = point[1];
     positions[offset + 2] = point[2];
 
-    const mix = layer === 2 ? random() * 0.42 : layer === 1 ? 0.35 + random() * 0.65 : random() * 0.82;
+    const mix = layer === 2 ? random() * 0.42 : layer === 1 ? 0.30 + random() * 0.68 : random() * 0.72;
     let color = mixColor(inner, outer, mix);
-    if (random() < (layer === 1 ? 0.23 : 0.065)) color = mixColor(color, accent, 0.55 + random() * 0.45);
-    const brightness = layer === 3 ? 0.52 : 0.69 + random() * 0.5;
+    if (random() < (layer === 1 ? 0.18 : layer === 3 ? 0.04 : 0.085)) color = mixColor(color, accent, 0.55 + random() * 0.45);
+    const brightness = layer === 3 ? 0.38 : layer === 2 ? 0.52 + random() * 0.30 :
+      layer === 1 ? 0.62 + random() * 0.40 : 0.94 + random() * 0.34;
     colors[offset] = Math.min(1, color[0] * brightness);
     colors[offset + 1] = Math.min(1, color[1] * brightness);
     colors[offset + 2] = Math.min(1, color[2] * brightness);
@@ -139,9 +139,11 @@ export function createParticleGeometry(spec: RenderSpec): BufferGeometry {
     burstVectors[offset] = point[0] / length * burstLength + sideways[0] * 0.21;
     burstVectors[offset + 1] = point[1] / length * burstLength + sideways[1] * 0.21;
     burstVectors[offset + 2] = point[2] / length * burstLength + sideways[2] * 0.21;
-    sizes[index] = (layer === 3 ? 1.1 : 1.5) + Math.pow(random(), 3.2) * (layer === 1 ? 4.8 : 3.6);
+    sizes[index] = (layer === 3 ? 0.8 : layer === 2 ? 1.05 : layer === 1 ? 1.22 : 1.58) +
+      Math.pow(random(), 3.2) * (layer === 1 ? 3.5 : layer === 3 ? 1.8 : 3.2);
     seeds[index] = random();
-    opacities[index] = (layer === 3 ? 0.23 : layer === 1 ? 0.48 : 0.61) + random() * (layer === 3 ? 0.2 : 0.31);
+    opacities[index] = (layer === 3 ? 0.14 : layer === 2 ? 0.29 : layer === 1 ? 0.44 : 0.78) +
+      random() * (layer === 3 ? 0.13 : layer === 2 ? 0.18 : layer === 1 ? 0.28 : 0.20);
   }
 
   const geometry = new BufferGeometry();

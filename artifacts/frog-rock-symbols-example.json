@@ -1,0 +1,305 @@
+{
+  "format": "personaverse-universe",
+  "spec": {
+    "seed": 19871107,
+    "name": "巡演电流城",
+    "tagline": "一拨弦，全城出发",
+    "geometry": {
+      "mode": "hybrid",
+      "count": 34000,
+      "radius": 1.55,
+      "dispersion": 0.43,
+      "irregularity": 0.48,
+      "bands": 5
+    },
+    "motion": {
+      "rotationSpeed": 0.085,
+      "pulse": 0.78,
+      "drift": 0.36,
+      "interaction": 0.9,
+      "burst": 3.8
+    },
+    "palette": {
+      "inner": "#d93675",
+      "outer": "#2467bd",
+      "accent": "#ffca55",
+      "background": "#080b1d"
+    },
+    "orbit": {
+      "count": 1,
+      "radius": 2.05,
+      "tilt": 0.62,
+      "opacity": 0.22
+    },
+    "creative": {
+      "displacement": "0.035 * sin ( 12.0 * p.y + 3.0 * t ) * cos ( 8.0 * p.x - 2.0 * t )"
+    },
+    "version": 2,
+    "motifs": [
+      {
+        "label": "电吉他化作巡演地图",
+        "strokes": [
+          {
+            "points": [
+              [
+                -0.38,
+                0.15,
+                1.12
+              ],
+              [
+                -0.68,
+                0.27,
+                1.12
+              ],
+              [
+                -0.85,
+                0.04,
+                1.08
+              ],
+              [
+                -0.63,
+                -0.21,
+                1.14
+              ],
+              [
+                -0.83,
+                -0.46,
+                1.08
+              ],
+              [
+                -0.65,
+                -0.72,
+                1.04
+              ],
+              [
+                -0.31,
+                -0.67,
+                1.13
+              ],
+              [
+                -0.19,
+                -0.32,
+                1.19
+              ],
+              [
+                -0.29,
+                -0.07,
+                1.17
+              ]
+            ],
+            "closed": true,
+            "primitive": "tube"
+          },
+          {
+            "points": [
+              [
+                -0.34,
+                0.08,
+                1.2
+              ],
+              [
+                -0.22,
+                0.15,
+                1.2
+              ],
+              [
+                0.62,
+                0.94,
+                1.07
+              ],
+              [
+                0.48,
+                1.04,
+                1.06
+              ]
+            ],
+            "closed": true,
+            "primitive": "tube"
+          },
+          {
+            "points": [
+              [
+                -0.54,
+                -0.39,
+                1.18
+              ],
+              [
+                -0.4,
+                -0.21,
+                1.22
+              ],
+              [
+                -0.28,
+                0.1,
+                1.22
+              ],
+              [
+                0.55,
+                0.99,
+                1.1
+              ]
+            ],
+            "closed": false,
+            "primitive": "beads"
+          }
+        ],
+        "copies": 1,
+        "axis": "z",
+        "color": "#FFCA55",
+        "width": 0.015,
+        "opacity": 0.58,
+        "motion": {
+          "spin": 0.025,
+          "breathe": 0.04,
+          "shimmer": 0.9,
+          "phase": 0.6
+        }
+      },
+      {
+        "label": "六根琴弦延伸成巡演道路",
+        "strokes": [
+          {
+            "points": [
+              [
+                -0.38,
+                -0.18,
+                1.18
+              ],
+              [
+                -0.05,
+                0.12,
+                1.23
+              ],
+              [
+                0.36,
+                0.31,
+                1.2
+              ],
+              [
+                0.77,
+                0.55,
+                1.12
+              ]
+            ],
+            "closed": false,
+            "primitive": "tube"
+          },
+          {
+            "points": [
+              [
+                -0.4,
+                -0.13,
+                1.2
+              ],
+              [
+                -0.08,
+                0.19,
+                1.25
+              ],
+              [
+                0.32,
+                0.4,
+                1.22
+              ],
+              [
+                0.73,
+                0.65,
+                1.12
+              ]
+            ],
+            "closed": false,
+            "primitive": "tube"
+          },
+          {
+            "points": [
+              [
+                -0.42,
+                -0.08,
+                1.22
+              ],
+              [
+                -0.11,
+                0.26,
+                1.27
+              ],
+              [
+                0.28,
+                0.49,
+                1.24
+              ],
+              [
+                0.69,
+                0.75,
+                1.12
+              ]
+            ],
+            "closed": false,
+            "primitive": "tube"
+          }
+        ],
+        "copies": 2,
+        "axis": "y",
+        "color": "#FFCA55",
+        "width": 0.009,
+        "opacity": 0.48,
+        "motion": {
+          "spin": 0.035,
+          "breathe": 0.025,
+          "shimmer": 1.15,
+          "phase": 1.4
+        }
+      }
+    ],
+    "frog": {
+      "accessory": "guitar",
+      "badgeText": "Guns N' Roses",
+      "accentColor": "#ffca55"
+    },
+    "symbols": [
+      {
+        "icon": "rock-horns",
+        "label": "摇滚",
+        "color": "#fff1c6"
+      },
+      {
+        "icon": "map",
+        "label": "旅行",
+        "color": "#fff1c6"
+      }
+    ]
+  },
+  "dna": {
+    "name": "巡演电流城",
+    "tagline": "一拨弦，全城出发",
+    "story": "每一站都是一座等待开唱的城市。拨动电吉他，琴弦便化作穿街而过的亮色轨道；跟着《Sweet Child o’ Mine》般跃动的吉他声前进，屋顶会升成舞台，下一条路也会随即展开。",
+    "traits": [
+      "摇滚节奏",
+      "电吉他",
+      "巡演旅途",
+      "夸张舞台",
+      "城市灯光"
+    ],
+    "visualMetaphor": "一把电吉他兼作巡演地图：六根发光琴弦延伸为城市道路，每个音符都是通往下一场演出的路标。",
+    "emotionalTone": "热烈、自由，带一点顽皮的冒险感",
+    "energy": 0.95,
+    "openness": 0.88
+  },
+  "version": 1,
+  "input": {
+    "music": [
+      {
+        "artist": "Guns N' Roses",
+        "title": "Sweet Child o Mine"
+      }
+    ],
+    "posts": [
+      "下一站继续开唱，让吉他声点亮整座城市。"
+    ],
+    "description": "我爱摇滚，喜欢弹电吉他，想把每次演出都变成一场自由又夸张的冒险。",
+    "interests": [
+      "摇滚",
+      "吉他",
+      "旅行"
+    ]
+  }
+}

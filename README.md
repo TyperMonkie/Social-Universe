@@ -21,9 +21,11 @@ npm run dev -- -p 3010 -H 127.0.0.1
 
 - `src/lib/contracts.ts` 定义输入、Universe DNA、RenderSpec 和导出格式。
 - `src/app/api/generate/route.ts` 接收输入，服务端分两步生成并校验结果。
+- Style Compiler 还会根据 Universe DNA 自由绘制最多三组装饰笔画，作为 RenderSpec v2 的 `motifs`。笔画可形成发光线条或粒珠，并独立于星球粒子缓慢运动；服务端校验坐标、数量与复杂度，浏览器不执行模型生成的 JavaScript。
+- 奶蛙使用项目内置的透明角色素材。模型根据真实兴趣和音乐为它选一件道具、短徽章和点缀色；星球表面另可显示最多两个随视角移动的高对比图标。三种粒子结构分别突出完整球体、宽星环和伞状星河。
 - `src/lib/creative-expression.ts` 只允许受限的纯 GLSL 浮点表达式；编译失败时客户端回退到安全着色器。
 - `src/components/renderer` 中的粒子缓冲区由固定 seed 一次生成，GPU 负责每帧运动、交互和散开/回聚；支持球形、混合形和星云形。
-- 导出 JSON 保存 seed、RenderSpec、可选输入及 DNA。导入时再次校验 RenderSpec 和自由表达式。
+- 导出 JSON 保存 seed、RenderSpec、可选输入及 DNA。导入时再次校验 RenderSpec、装饰笔画和自由表达式；旧版 v1 宇宙文件仍可导入。
 
 图片理解接口已经在输入契约中预留，当前版本不上传或理解图片。公开分享链接和 Nai Frog 伙伴也尚未实现。
 

@@ -27,6 +27,30 @@ const object = (properties: Record<string, JsonSchema>): JsonSchema => ({
 const text = { type: "string" };
 const number = { type: "number" };
 const integer = { type: "integer" };
+const motif = object({
+  label: text,
+  strokes: {
+    type: "array",
+    items: object({
+      // Avoid tuple/prefixItems here for broad Responses-compatible gateways;
+      // the shared Zod contract checks exactly three finite numbers per point.
+      points: { type: "array", items: { type: "array", items: number } },
+      closed: { type: "boolean" },
+      primitive: { type: "string", enum: ["tube", "beads"] },
+    }),
+  },
+  copies: integer,
+  axis: { type: "string", enum: ["x", "y", "z"] },
+  color: text,
+  width: number,
+  opacity: number,
+  motion: object({
+    spin: number,
+    breathe: number,
+    shimmer: number,
+    phase: number,
+  }),
+});
 
 export const DNA_JSON_SCHEMA = object({
   name: text,
@@ -40,7 +64,7 @@ export const DNA_JSON_SCHEMA = object({
 });
 
 export const SPEC_JSON_SCHEMA = object({
-  version: integer,
+  version: { type: "integer", enum: [2] },
   seed: integer,
   name: text,
   tagline: text,
@@ -62,6 +86,23 @@ export const SPEC_JSON_SCHEMA = object({
   palette: object({ inner: text, outer: text, accent: text, background: text }),
   orbit: object({ count: integer, radius: number, tilt: number, opacity: number }),
   creative: object({ displacement: { type: ["string", "null"] } }),
+  // A required object guarantees the model proposes at least one freely drawn
+  // motif without relying on minItems, which some compatible gateways reject.
+  primaryMotif: motif,
+  additionalMotifs: { type: "array", items: motif },
+  frog: object({
+    accessory: { type: "string", enum: ["guitar", "camera", "ball", "microphone", "book", "none"] },
+    badgeText: text,
+    accentColor: text,
+  }),
+  symbols: {
+    type: "array",
+    items: object({
+      icon: { type: "string", enum: ["rock-horns", "guitar", "camera", "ball", "music", "book", "map", "star"] },
+      label: text,
+      color: text,
+    }),
+  },
 });
 
 function outputText(body: unknown): string | null {
@@ -123,7 +164,7 @@ export async function requestStructuredJson(
             schema,
           },
         },
-        max_output_tokens: 3000,
+        max_output_tokens: stage === "style" ? 4500 : 3000,
         store: false,
       }),
       signal: AbortSignal.timeout(90_000),

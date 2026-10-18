@@ -1,13 +1,17 @@
 import "server-only";
 
 import {
+  fitGeneratedMotifs,
   renderSpecSchema,
+  type ProfileInput,
   universeDnaSchema,
   type RenderSpec,
   type UniverseDNA,
 } from "../contracts";
 import { defaultSpec } from "../default-spec";
 import { validateDisplacementExpression } from "../creative-expression";
+import { normalizeFrog } from "../frog";
+import { normalizeSymbols } from "../symbols";
 import { GenerationError } from "./muzeai";
 
 type UnknownObject = Record<string, unknown>;
@@ -64,7 +68,11 @@ export function normalizeDna(raw: unknown): UniverseDNA {
   return parsed.data;
 }
 
-export function normalizeRenderSpec(raw: unknown, dna: UniverseDNA): RenderSpec {
+export function normalizeRenderSpec(
+  raw: unknown,
+  dna: UniverseDNA,
+  source: Pick<ProfileInput, "interests" | "music"> = { interests: [], music: [] },
+): RenderSpec {
   const input = asObject(raw);
   const geometry = asObject(input?.geometry);
   const motion = asObject(input?.motion);
@@ -79,8 +87,15 @@ export function normalizeRenderSpec(raw: unknown, dna: UniverseDNA): RenderSpec 
   const mode = geometry.mode === "sphere" || geometry.mode === "hybrid" || geometry.mode === "nebula"
     ? geometry.mode
     : fallback.geometry.mode;
+  const normalizedPalette = {
+    inner: hexColor(palette.inner, fallback.palette.inner),
+    outer: hexColor(palette.outer, fallback.palette.outer),
+    accent: hexColor(palette.accent, fallback.palette.accent),
+    background: hexColor(palette.background, fallback.palette.background),
+  };
+  const frog = normalizeFrog(input.frog, normalizedPalette.accent, source);
   const candidate = {
-    version: 1 as const,
+    version: 2 as const,
     seed: bounded(input.seed, fallback.seed, 0, 2147483647, true),
     name: shortText(input.name, 80, dna.name),
     tagline: shortText(input.tagline, 160, dna.tagline),
@@ -99,12 +114,7 @@ export function normalizeRenderSpec(raw: unknown, dna: UniverseDNA): RenderSpec 
       interaction: bounded(motion.interaction, fallback.motion.interaction, 0, 1),
       burst: bounded(motion.burst, fallback.motion.burst, 0.5, 5),
     },
-    palette: {
-      inner: hexColor(palette.inner, fallback.palette.inner),
-      outer: hexColor(palette.outer, fallback.palette.outer),
-      accent: hexColor(palette.accent, fallback.palette.accent),
-      background: hexColor(palette.background, fallback.palette.background),
-    },
+    palette: normalizedPalette,
     orbit: {
       count: bounded(orbit.count, fallback.orbit.count, 0, 3, true),
       radius: bounded(orbit.radius, fallback.orbit.radius, 1.2, 4),
@@ -115,6 +125,9 @@ export function normalizeRenderSpec(raw: unknown, dna: UniverseDNA): RenderSpec 
       // Creative code is optional. Rejecting it must not discard a good spec.
       displacement: validateDisplacementExpression(creative.displacement),
     },
+    motifs: fitGeneratedMotifs(input.motifs),
+    frog,
+    symbols: normalizeSymbols(input.symbols, source, frog, normalizedPalette),
   };
 
   const parsed = renderSpecSchema.safeParse(candidate);

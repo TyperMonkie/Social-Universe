@@ -301,7 +301,7 @@ export default function Home() {
 
         <main className="preview-column">
           <section className="universe-stage" aria-label="可交互的粒子星球" style={{ "--stage-bg": spec.palette.background } as CSSProperties}>
-            <div className="scene-viewport"><UniverseScene spec={spec} burst={burst} onShaderStatus={setShaderStatus} /></div>
+            <div className="scene-viewport"><UniverseScene spec={spec} sourceInput={sourceInput} burst={burst} onShaderStatus={setShaderStatus} /></div>
             <div className="stage-topline">
               <span className="stage-live"><span className="signal-dot" /> LIVE CANVAS</span>
               <span className="seed-label">SEED <strong>{spec.seed}</strong></span>
@@ -348,6 +348,12 @@ export default function Home() {
               </div>
             ) : (
               <div className="dna-empty"><span className="empty-sigil" aria-hidden="true">✧</span><div><strong>每个人都有自己的宇宙纹理。</strong><p>填入左侧内容后，这里会出现 AI 对你气质的理解；上方的示例星球现在就可以拖动和散开。</p></div></div>
+            )}
+            {spec.version === 2 && spec.motifs.length > 0 && (
+              <div className="dna-motifs" aria-label="宇宙中的专属装饰">
+                <div className="dna-motifs-heading"><span aria-hidden="true">✦</span><strong>专属装饰</strong><small>从你的宇宙故事延展的视觉层</small></div>
+                <ul>{spec.motifs.map((motif, index) => <li key={`${motif.label}-${index}`}>{motif.label}</li>)}</ul>
+              </div>
             )}
             {spec.creative.displacement && <p className={`shader-note ${shaderStatus === "fallback" ? "is-fallback" : ""}`}>{shaderStatus === "fallback" ? "创意位移片段未通过校验，场景已安全回退。" : "此宇宙包含一段 AI 创作的粒子位移表达式。"}</p>}
           </section>
